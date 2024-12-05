@@ -1,4 +1,8 @@
-import java.util.Objects;
+package model;
+
+
+import model.Epic;
+import model.StatusTask;
 
 public class SubTask extends Task {
     private int idEpic;
