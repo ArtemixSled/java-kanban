@@ -1,15 +1,11 @@
 package model;
 
-
-import model.Epic;
-import model.StatusTask;
-
 public class SubTask extends Task {
     private int idEpic;
 
-    public SubTask(String nameTask, String description, StatusTask statusTask, Epic epicTask) {
+    public SubTask(String nameTask, String description, StatusTask statusTask, int idEpic) {
         super(nameTask, description, statusTask);
-        this.idEpic = epicTask.getId();
+        this.idEpic = idEpic;
     }
 
     @Override
@@ -26,4 +22,5 @@ public class SubTask extends Task {
     public void setIdEpic(int idEpic) {
         this.idEpic = idEpic;
     }
+
 }
