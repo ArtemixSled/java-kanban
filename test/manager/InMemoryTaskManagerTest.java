@@ -4,21 +4,14 @@ import model.Epic;
 import model.StatusTask;
 import model.SubTask;
 import model.Task;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
-
-    @AfterEach
-    public void clearStaticId() {
-        InMemoryTaskManager.idTask = 0;
-    }
 
     @Test
     void createTask() {
@@ -222,15 +215,15 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void getInMemoryHistoryManager() {
+    void getHistory() {
         InMemoryTaskManager manager = new InMemoryTaskManager();
-        InMemoryHistoryManager inMemoryHistoryManager = null;
+        List<Task> history = null;
 
-        assertNull(inMemoryHistoryManager);
+        assertNull(history);
 
-        inMemoryHistoryManager = manager.getInMemoryHistoryManager();
+        history = manager.getHistory();
 
-        assertNotNull(inMemoryHistoryManager);
+        assertNotNull(history);
     }
 
     @Test
@@ -324,6 +317,6 @@ class InMemoryTaskManagerTest {
         SubTask subTask = manager.createSubTask(new SubTask("Test1", "Test1", StatusTask.NEW, epic.getId()));
 
         subTask.setId(1);
-        assertNotNull(manager.createSubTask(subTask));
+        assertNull(manager.createSubTask(subTask));
     }
 }

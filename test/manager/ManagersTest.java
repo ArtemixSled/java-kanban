@@ -8,24 +8,22 @@ class ManagersTest {
 
     @Test
     void getDefaultHistory() {
-        Managers<TaskManager> managers = new Managers<>();
         HistoryManager InMemoryHistoryManager = null;
 
         assertNull(InMemoryHistoryManager);
 
-        InMemoryHistoryManager = managers.getDefaultHistory();
+        InMemoryHistoryManager = Managers.getDefaultHistory();
 
         assertNotNull(InMemoryHistoryManager);
     }
 
     @Test
     void getDefault() {
-        Managers<TaskManager> managers = new Managers<>();
         TaskManager taskManager = null;
 
         assertNull(taskManager);
 
-        taskManager = managers.getDefault();
+        taskManager = Managers.getDefault();
 
         assertNotNull(taskManager);
     }

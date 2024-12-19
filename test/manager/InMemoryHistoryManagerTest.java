@@ -13,10 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
 
-    @AfterEach
-    public void clearStaticId() {
-        InMemoryTaskManager.idTask = 0;
-    }
+
 
     @Test
     void addTask() {

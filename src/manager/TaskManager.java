@@ -45,7 +45,5 @@ public interface TaskManager {
 
     List<SubTask> getAllSubTaskByEpic(Epic epic);
 
-    void updateStatusEpic(Epic epic);
-
-    InMemoryHistoryManager getInMemoryHistoryManager();
+    List<Task> getHistory();
 }
