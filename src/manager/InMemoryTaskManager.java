@@ -15,6 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, SubTask> subTaskList = new HashMap<>();
 
     private HistoryManager historyManager = Managers.getDefaultHistory();
+
     @Override
     public Task createTask(Task task) {
         idTask++;
@@ -188,6 +189,7 @@ public class InMemoryTaskManager implements TaskManager {
         return allSubTaskByEpic;
     }
 
+    @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
     }

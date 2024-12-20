@@ -1,14 +1,11 @@
 package manager;
-import model.Epic;
-import model.SubTask;
 import model.Task;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private LinkedList<Task> history = new LinkedList<>();
+    private List<Task> history = new LinkedList<>();
 
     private static final int MAX_HISTORY_SIZE = 10;
 
@@ -31,7 +28,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public LinkedList<Task> getHistory() {
+    public List<Task> getHistory() {
         return new LinkedList<>(history);
     }
 }
