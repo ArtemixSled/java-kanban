@@ -15,6 +15,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             this.task = task;
         }
     }
+
     private final Map<Integer, Node> taskMap = new HashMap<>();
 
     private int size = 0;
