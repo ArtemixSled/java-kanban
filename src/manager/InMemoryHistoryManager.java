@@ -56,8 +56,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (tail == null) {
             head = node;
             tail = node;
-        }
-        else {
+        } else {
             tail.next = node;
             node.prev = tail;
             tail = node;

@@ -242,8 +242,7 @@ public class InMemoryTaskManager implements TaskManager {
         else if (AllSubTaskDone) {
             epic.setStatusTask(StatusTask.DONE);
             updateEpic(epic);
-        }
-        else {
+        } else {
             epic.setStatusTask(StatusTask.IN_PROGRESS);
             updateEpic(epic);
         }
