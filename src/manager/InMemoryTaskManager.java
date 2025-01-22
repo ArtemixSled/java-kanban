@@ -223,23 +223,22 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         ArrayList<SubTask> subTasksByEpic = new ArrayList<>(getAllSubTaskByEpic(epic));
-        boolean AllSubTaskNew = true;
-        boolean AllSubTaskDone = true;
+        boolean isAllSubTaskNew = true;
+        boolean isAllSubTaskDone = true;
 
         for (SubTask subTaskByList : subTasksByEpic) {
             if (subTaskByList.getStatusTask() != StatusTask.NEW) {
-                AllSubTaskNew = false;
+                isAllSubTaskNew = false;
             }
             if (subTaskByList.getStatusTask() != StatusTask.DONE) {
-                AllSubTaskDone = false;
+                isAllSubTaskDone = false;
             }
         }
 
-        if (AllSubTaskNew) {
+        if (isAllSubTaskNew) {
             epic.setStatusTask(StatusTask.NEW);
             updateEpic(epic);
-        }
-        else if (AllSubTaskDone) {
+        } else if (isAllSubTaskDone) {
             epic.setStatusTask(StatusTask.DONE);
             updateEpic(epic);
         } else {
