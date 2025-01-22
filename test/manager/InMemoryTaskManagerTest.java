@@ -4,6 +4,7 @@ import model.Epic;
 import model.StatusTask;
 import model.SubTask;
 import model.Task;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
@@ -13,10 +14,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
 
+    private InMemoryHistoryManager historyManager;
+    private InMemoryTaskManager manager;
+    @BeforeEach
+    public void setUp() {
+        historyManager = new InMemoryHistoryManager();
+        manager = new InMemoryTaskManager();
+    }
+
     @Test
     void createTask() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         Task task = manager.createTask(new Task("Test1", "Test1", StatusTask.NEW));
 
         assertNotNull(task, "Задачу не создал (Объект task содержит null)");
@@ -24,8 +31,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void createEpic() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         Epic epic = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW));
 
         assertNotNull(epic, "Эпик не создал (Объект epic содержит null)");
@@ -33,8 +38,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void createSubTask() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         Epic epic = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW));
         SubTask subTask = manager.createSubTask(new SubTask("Test1", "Test1", StatusTask.NEW, epic.getId()));
 
@@ -43,8 +46,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void returnTaskByID() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         int testId1 = 1;
         int testId22 = 22;
 
@@ -60,8 +61,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void returnEpicByID() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         int testId1 = 1;
         int testId22 = 22;
 
@@ -76,8 +75,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void returnSubTaskByID() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         int testId2 = 2;
         int testId22 = 22;
 
@@ -93,7 +90,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void deleteTaskByID() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
         int testId1 = 1;
 
         manager.createTask(new Task("Test1", "Test1", StatusTask.NEW));
@@ -107,7 +103,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void deleteEpicByID() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
         int testId1 = 1;
 
         manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW));
@@ -121,8 +116,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void deleteSubTaskByID() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         int testId2 = 2;
 
         Epic epic = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW));
@@ -137,8 +130,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getAllTasks() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         Task task1 = new Task("Task 1", "Description 1", StatusTask.NEW);
         Task task2 = new Task("Task 2", "Description 2", StatusTask.NEW);
 
@@ -155,8 +146,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getAllEpics() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         Epic epic1 = new Epic("Task 1", "Description 1", StatusTask.NEW);
         Epic epic2 = new Epic("Task 2", "Description 2", StatusTask.NEW);
 
@@ -173,8 +162,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getAllSubTask() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         Epic epic = new Epic("Task", "Description", StatusTask.NEW);
         manager.createEpic(epic);
 
@@ -194,8 +181,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getAllSubTaskByEpic() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         Epic epic = new Epic("Task", "Description", StatusTask.NEW);
         manager.createEpic(epic);
 
@@ -216,7 +201,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void getHistory() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
         List<Task> history = null;
 
         assertNull(history);
@@ -228,8 +212,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void equalsTask() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         Task taskOne = manager.createTask(new Task("Test1", "Test1", StatusTask.NEW));
         Task taskTwo = manager.createTask(new Task("Test1", "Test1", StatusTask.NEW));
 
@@ -245,8 +227,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void equalsTaskHeirs() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         Epic taskOne = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW));
         SubTask taskTwo = manager.createSubTask(new SubTask("Test1", "Test1", StatusTask.NEW, taskOne.getId()));
 
@@ -262,8 +242,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testTaskIdConflict() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         Task task1 = new Task("Test1", "Test1", StatusTask.NEW);
         manager.createTask(task1);
 
@@ -286,14 +264,11 @@ class InMemoryTaskManagerTest {
             }
         }
         assertTrue(containsOriginalTaskId);
-
         assertNotEquals(originalTaskId, task2.getId());
     }
 
     @Test
     void immutabilityTask() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         Task task1 = new Task("Test1", "Test1", StatusTask.NEW);
         String nameTask = task1.getNameTask();
         String description = task1.getDescription();
@@ -311,8 +286,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void subTaskCannotIsEpic() {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         Epic epic = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW));
         SubTask subTask = manager.createSubTask(new SubTask("Test1", "Test1", StatusTask.NEW, epic.getId()));
 
