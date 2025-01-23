@@ -23,19 +23,6 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void testMaxSizeHistory() {
-        for (int i = 0; i < 12; i++) {
-            Task task = new Task("Task " + i, "Description " + i, StatusTask.NEW);
-            task.setId(i);
-            historyManager.add(task);
-        }
-
-        List<Task> history = historyManager.getHistory();
-        assertEquals(10, history.size());
-        assertEquals(2, history.get(0).getId());
-    }
-
-    @Test
     void removeTask() {
         List<Task> history = historyManager.getHistory();
 

@@ -4,14 +4,14 @@ import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private static class Node {
-        Task task;
+    private static class Node<T> {
+        T task;
 
-        Node prev;
+        Node<T> prev;
 
-        Node next;
+        Node<T> next;
 
-        Node(Task task) {
+        Node(T task) {
             this.task = task;
         }
     }
@@ -24,8 +24,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private Node tail;
 
-    private static final int MAX_HISTORY_SIZE = 10;
-
     @Override
     public void add(Task newTask) {
         if (newTask == null) {
@@ -35,17 +33,13 @@ public class InMemoryHistoryManager implements HistoryManager {
         Task task  = new Task(newTask.getNameTask(), newTask.getDescription(), newTask.getStatusTask());
         task.setId(newTask.getId());
 
-        Node newNode = new Node(task);
+        Node<Task> newNode = new Node<>(task);
 
         linkLast(newNode);
         taskMap.put(newNode.task.getId(), newNode);
-
-        if (size > MAX_HISTORY_SIZE) {
-            removeNode(head);
-        }
     }
 
-    public void removeNode(Node node) {
+    private void removeNode(Node<Task> node) {
         if (node == null) {
             return;
         }
@@ -63,15 +57,14 @@ public class InMemoryHistoryManager implements HistoryManager {
         size--;
     }
 
-    public void linkLast(Node node) {
+    private void linkLast(Node<Task> node) {
         if (tail == null) {
             head = node;
-            tail = node;
         } else {
             tail.next = node;
             node.prev = tail;
-            tail = node;
         }
+        tail = node;
         size++;
     }
 
@@ -85,7 +78,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public List<Task> getHistory() {
         List<Task> historyList = new ArrayList<>();
-        Node current = head;
+        Node<Task> current = head;
         while (current != null) {
             historyList.add(current.task);
             current = current.next;

@@ -14,11 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
 
-    private InMemoryHistoryManager historyManager;
     private InMemoryTaskManager manager;
     @BeforeEach
     public void setUp() {
-        historyManager = new InMemoryHistoryManager();
         manager = new InMemoryTaskManager();
     }
 
