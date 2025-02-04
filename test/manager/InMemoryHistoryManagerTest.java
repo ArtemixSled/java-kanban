@@ -5,6 +5,7 @@ import model.StatusTask;
 import model.SubTask;
 import model.Task;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -13,13 +14,38 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
 
-
+    private InMemoryHistoryManager historyManager;
+    private InMemoryTaskManager manager;
+    @BeforeEach
+    public void setUp() {
+        historyManager = new InMemoryHistoryManager();
+        manager = new InMemoryTaskManager();
+    }
 
     @Test
-    void addTask() {
-        InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
-        InMemoryTaskManager manager = new InMemoryTaskManager();
+    void removeTask() {
+        List<Task> history = historyManager.getHistory();
 
+        Task task = new Task("task", "task", StatusTask.NEW);
+        manager.createTask(task);
+
+        assertTrue(history.isEmpty());
+
+        task = manager.returnTaskByID(1);
+        historyManager.add(task);
+
+        history = historyManager.getHistory();
+        assertFalse(history.isEmpty());
+
+        manager.deleteTaskByID(1);
+        historyManager.remove(1);
+
+        history = historyManager.getHistory();
+        assertTrue(history.isEmpty());
+
+    }
+    @Test
+    void addTask() {
         Task task = new Task("task", "task", StatusTask.NEW);
         manager.createTask(task);
 
@@ -37,9 +63,6 @@ class InMemoryHistoryManagerTest {
     }
     @Test
     void addEpic() {
-        InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         Epic epic = new Epic("epic", "epic", StatusTask.NEW);
         manager.createEpic(epic);
 
@@ -57,9 +80,6 @@ class InMemoryHistoryManagerTest {
     }
     @Test
     void addSubTask() {
-        InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-
         Epic epic = new Epic("epic", "epic", StatusTask.NEW);
         manager.createEpic(epic);
 
@@ -85,12 +105,11 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void getHistory() {
-        InMemoryHistoryManager managerHistory = new InMemoryHistoryManager();
         List<Task> history = null;
 
         assertNull(history);
 
-        history = managerHistory.getHistory();
+        history = historyManager.getHistory();
 
         assertNotNull(history);
     }
