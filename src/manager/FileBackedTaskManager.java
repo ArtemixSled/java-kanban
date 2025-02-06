@@ -39,6 +39,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static FileBackedTaskManager loadFromFile(File file) {
+        int maxIdTask = 0;
 
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
 
@@ -49,14 +50,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             while (fileReader.ready()) {
                 Task task = fromString(fileReader.readLine());
 
+                if (task.getId() > maxIdTask) {
+                    maxIdTask = task.getId();
+                }
+
                 if (task instanceof Epic) {
-                    fileBackedTaskManager.createEpic((Epic) task);
+                    fileBackedTaskManager.epicList.put(task.getId(), (Epic)task);
                 } else if (task instanceof SubTask) {
-                    fileBackedTaskManager.createSubTask((SubTask) task);
+                    fileBackedTaskManager.subTaskList.put(task.getId(), (SubTask) task);
                 } else if (task instanceof Task) {
-                    fileBackedTaskManager.createTask(task);
+                    fileBackedTaskManager.taskList.put(task.getId(), task);
                 }
             }
+
+            fileBackedTaskManager.setIdTask(maxIdTask + 1);
+
         } catch (IOException e) {
             throw new ManagerSaveException("Не удается прочитать файл", e);
         }
@@ -184,10 +192,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    static class ManagerSaveException extends RuntimeException {
-
-        public ManagerSaveException(String message, Throwable cause) {
-            super(message, cause);
-        }
+    public File getFile() {
+        return file;
     }
 }

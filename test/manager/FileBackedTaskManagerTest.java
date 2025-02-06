@@ -1,20 +1,31 @@
 package manager;
 import model.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTaskManagerTest {
+class FileBackedTaskManagerTest extends AbstractTaskManagerTest<FileBackedTaskManager> {
 
     private File tempFile;
-    private FileBackedTaskManager manager;
 
-    @BeforeEach
-    void setUp() throws IOException {
-        tempFile = File.createTempFile("fileBackedTaskManagerTest", ".txt");
-        manager = new FileBackedTaskManager(tempFile);
+    @Override
+    protected FileBackedTaskManager createTaskManager() {
+        try {
+            tempFile = File.createTempFile("tasks", "txt");
+            return new FileBackedTaskManager(tempFile);
+        } catch (IOException e) {
+            throw new RuntimeException("Не удалось создать временный файл", e);
+        }
+    }
+
+    @Override
+    public void tearDown() {
+        super.tearDown();
+        if (tempFile != null && tempFile.exists()) {
+            assertTrue(tempFile.delete(), "Не удалось удалить временный файл");
+        }
     }
 
     @Test
@@ -32,6 +43,7 @@ class FileBackedTaskManagerTest {
     void saveAndLoadTasks() {
         Task task1 = new Task("Task", "Description", StatusTask.NEW);
         Epic epic1 = new Epic("Epic", "Description", StatusTask.IN_PROGRESS);
+
 
         manager.createTask(task1);
         manager.createEpic(epic1);
