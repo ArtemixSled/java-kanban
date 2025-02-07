@@ -10,11 +10,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int idTask = 0;
 
-    private Map<Integer, Task> taskList = new HashMap<>();
+    protected Map<Integer, Task> taskList = new HashMap<>();
 
-    private Map<Integer, Epic> epicList = new HashMap<>();
+    protected Map<Integer, Epic> epicList = new HashMap<>();
 
-    private Map<Integer, SubTask> subTaskList = new HashMap<>();
+    protected Map<Integer, SubTask> subTaskList = new HashMap<>();
 
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
@@ -247,5 +247,13 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatusTask(StatusTask.IN_PROGRESS);
             updateEpic(epic);
         }
+    }
+
+    public int getIdTask() {
+        return idTask;
+    }
+
+    public void setIdTask(int idTask) {
+        this.idTask = idTask;
     }
 }
