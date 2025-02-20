@@ -3,6 +3,8 @@ import model.*;
 import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,35 +43,37 @@ class FileBackedTaskManagerTest extends AbstractTaskManagerTest<FileBackedTaskMa
 
     @Test
     void saveAndLoadTasks() {
-        Task task1 = new Task("Task", "Description", StatusTask.NEW);
+        Task task1 = new Task("Task", "Description", StatusTask.NEW, LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0), Duration.ofHours(6));
         Epic epic1 = new Epic("Epic", "Description", StatusTask.IN_PROGRESS);
 
 
         manager.createTask(task1);
         manager.createEpic(epic1);
-        SubTask subTask1 = new SubTask("SubTask", "Description", StatusTask.DONE, epic1.getId());
+        SubTask subTask1 = new SubTask("SubTask", "Description", StatusTask.DONE, epic1.getId(), LocalDateTime.of(2001, 1, 1, 0, 0, 0, 0), Duration.ofHours(6));
         manager.createSubTask(subTask1);
 
         manager.save();
 
-        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
+        assertDoesNotThrow(() -> {
+            FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
 
-        assertEquals(1, loadedManager.getAllTasks().size());
-        assertEquals(1, loadedManager.getAllEpics().size());
-        assertEquals(1, loadedManager.getAllSubTask().size());
+            assertEquals(1, loadedManager.getAllTasks().size());
+            assertEquals(1, loadedManager.getAllEpics().size());
+            assertEquals(1, loadedManager.getAllSubTask().size());
 
-        Task loadedTask = loadedManager.returnTaskByID(1);
-        assertNotNull(loadedTask);
-        assertEquals("Task", loadedTask.getNameTask());
+            Task loadedTask = loadedManager.returnTaskByID(1);
+            assertNotNull(loadedTask);
+            assertEquals("Task", loadedTask.getNameTask());
 
-        Epic loadedEpic = loadedManager.returnEpicByID(2);
-        assertNotNull(loadedEpic);
-        assertEquals("Epic", loadedEpic.getNameTask());
+            Epic loadedEpic = loadedManager.returnEpicByID(2);
+            assertNotNull(loadedEpic);
+            assertEquals("Epic", loadedEpic.getNameTask());
 
-        SubTask loadedSubTask = loadedManager.returnSubTaskByID(3);
-        assertNotNull(loadedSubTask);
-        assertEquals("SubTask", loadedSubTask.getNameTask());
-        assertEquals(epic1.getId(), loadedSubTask.getIdEpic());
+            SubTask loadedSubTask = loadedManager.returnSubTaskByID(3);
+            assertNotNull(loadedSubTask);
+            assertEquals("SubTask", loadedSubTask.getNameTask());
+            assertEquals(epic1.getId(), loadedSubTask.getIdEpic());
+        }, "Загрузка данных из файла с задачами");
     }
 
     @Test
@@ -77,8 +81,8 @@ class FileBackedTaskManagerTest extends AbstractTaskManagerTest<FileBackedTaskMa
         Epic epic = new Epic("Epic", "Description", StatusTask.NEW);
 
         manager.createEpic(epic);
-        SubTask subTask1 = new SubTask("SubTask 1", "Description", StatusTask.NEW, epic.getId());
-        SubTask subTask2 = new SubTask("SubTask 2", "Description", StatusTask.IN_PROGRESS, epic.getId());
+        SubTask subTask1 = new SubTask("SubTask 1", "Description", StatusTask.NEW, epic.getId(), LocalDateTime.of(2001, 1, 1, 0, 0, 0, 0), Duration.ofHours(6));
+        SubTask subTask2 = new SubTask("SubTask 2", "Description", StatusTask.IN_PROGRESS, epic.getId(), LocalDateTime.of(2002, 1, 1, 0, 0, 0, 0), Duration.ofHours(6));
         manager.createSubTask(subTask1);
         manager.createSubTask(subTask2);
 
@@ -86,14 +90,16 @@ class FileBackedTaskManagerTest extends AbstractTaskManagerTest<FileBackedTaskMa
 
         manager.save();
 
-        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
+        assertDoesNotThrow(() -> {
+            FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
 
-        Epic loadedEpic = loadedManager.returnEpicByID(epic.getId());
-        assertNotNull(loadedEpic);
-        assertEquals(StatusTask.IN_PROGRESS, loadedEpic.getStatusTask());
+            Epic loadedEpic = loadedManager.returnEpicByID(epic.getId());
+            assertNotNull(loadedEpic);
+            assertEquals(StatusTask.IN_PROGRESS, loadedEpic.getStatusTask());
 
-        SubTask loadedSubTask = loadedManager.returnSubTaskByID(subTask2.getId());
-        assertNotNull(loadedSubTask);
-        assertEquals(StatusTask.IN_PROGRESS, loadedSubTask.getStatusTask());
+            SubTask loadedSubTask = loadedManager.returnSubTaskByID(subTask2.getId());
+            assertNotNull(loadedSubTask);
+            assertEquals(StatusTask.IN_PROGRESS, loadedSubTask.getStatusTask());
+        }, "Загрузка данных из файла с обновлениями статусов");
     }
 }

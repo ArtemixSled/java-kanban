@@ -4,7 +4,9 @@ import model.Epic;
 import model.SubTask;
 import model.Task;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.TreeSet;
 
 public interface TaskManager {
     Task createTask(Task task);
@@ -46,4 +48,14 @@ public interface TaskManager {
     List<SubTask> getAllSubTaskByEpic(Epic epic);
 
     List<Task> getHistory();
+
+    LocalDateTime epicStartTime(Epic epic);
+
+    LocalDateTime epicEndTime(Epic epic);
+
+    void refreshEpicInfo(Epic epic);
+
+    TreeSet<Task> getPrioritizedTasks();
+
+    boolean isTimeIntersections(Task task1);
 }

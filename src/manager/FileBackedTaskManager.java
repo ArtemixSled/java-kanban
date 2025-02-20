@@ -4,6 +4,10 @@ import model.StatusTask;
 import model.SubTask;
 import model.Task;
 import java.io.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.stream.Stream;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -15,24 +19,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-
-            writer.write("id,type,name,status,description,epic");
+            writer.write("id,type,name,status,description,epic,startTime,duration");
             writer.newLine();
 
-            for (Task task : getAllTasks()) {
-                writer.write(toString(task));
-                writer.newLine();
-            }
-
-            for (Epic epic : getAllEpics()) {
-                writer.write(toString(epic));
-                writer.newLine();
-            }
-
-            for (SubTask subTask : getAllSubTask()) {
-                writer.write(toString(subTask));
-                writer.newLine();
-            }
+            Stream.concat(Stream.concat(getAllTasks().stream(), getAllEpics().stream()), getAllSubTask().stream())
+                    .forEach(task -> {
+                        try {
+                            writer.write(toString(task));
+                            writer.newLine();
+                        } catch (IOException e) {
+                            throw new ManagerSaveException("Ошибка при сохранении данных в файл", e);
+                        }
+                    });
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при сохранении данных в файл", e);
         }
@@ -74,7 +72,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private String toString(Task task) {
         StringBuilder stringTask = new StringBuilder();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         stringTask.append(task.getId()).append(",");
+
+        Duration duration = task.getDuration();
+        String durationString = (duration != null) ? duration.toString() : "PT0M";
 
         if (task instanceof SubTask) {
             stringTask.append("SUBTASK,");
@@ -86,6 +88,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             stringTask.append(subTask.getDescription());
             stringTask.append(",");
             stringTask.append(subTask.getIdEpic());
+            stringTask.append(",");
+            stringTask.append((task.getStartTime() != null) ? task.getStartTime().format(formatter) : "null");
+            stringTask.append(",");
+            stringTask.append(durationString);
         } else if (task instanceof Epic) {
             stringTask.append("EPIC,");
             Epic epic = (Epic) task;
@@ -94,6 +100,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             stringTask.append(epic.getStatusTask());
             stringTask.append(",");
             stringTask.append(epic.getDescription());
+            stringTask.append(",");
+            stringTask.append("null");
+            stringTask.append(",");
+            stringTask.append((task.getStartTime() != null) ? task.getStartTime().format(formatter) : "null");
+            stringTask.append(",");
+            stringTask.append(durationString);
         } else {
             stringTask.append("TASK,");
             stringTask.append(task.getNameTask());
@@ -101,32 +113,40 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             stringTask.append(task.getStatusTask());
             stringTask.append(",");
             stringTask.append(task.getDescription());
+            stringTask.append(",");
+            stringTask.append("null");
+            stringTask.append(",");
+            stringTask.append((task.getStartTime() != null) ? task.getStartTime().format(formatter) : "null");
+            stringTask.append(",");
+            stringTask.append(durationString);
         }
         return stringTask.toString();
     }
 
     private static Task fromString(String value) {
         String stringTask = value;
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         String[] split = stringTask.split(",");
 
         int id = Integer.parseInt(split[0]);
         String nameTask = split[2];
         StatusTask statusTask = StatusTask.valueOf(split[3]);
         String description = split[4];
+        Integer idEpic = (!split[5].equals("null")) ? Integer.parseInt(split[5]) : null;
+        LocalDateTime startTime = (!split[6].equals("null")) ? LocalDateTime.parse(split[6], formatter) : null;
+        Duration duration = Duration.parse(split[7]);
 
         switch (split[1]) {
             case "SUBTASK":
-                int idEpic = Integer.parseInt(split[5]);
-                SubTask subTask = new SubTask(nameTask, description, statusTask, idEpic);
+                SubTask subTask = new SubTask(nameTask, description, statusTask, idEpic, startTime, duration);
                 subTask.setId(id);
                 return subTask;
             case "EPIC":
-                Epic epic = new Epic(nameTask, description, statusTask);
+                Epic epic = new Epic(nameTask, description, statusTask, startTime, duration);
                 epic.setId(id);
                 return epic;
             default:
-                Task task = new Task(nameTask, description, statusTask);
+                Task task = new Task(nameTask, description, statusTask, startTime, duration);
                 task.setId(id);
                 return task;
         }
