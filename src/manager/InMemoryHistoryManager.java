@@ -30,7 +30,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             return;
         }
 
-        Task task  = new Task(newTask.getNameTask(), newTask.getDescription(), newTask.getStatusTask());
+        Task task  = new Task(newTask.getNameTask(), newTask.getDescription(), newTask.getStatusTask(), newTask.getStartTime(), newTask.getDuration());
         task.setId(newTask.getId());
 
         Node<Task> newNode = new Node<>(task);

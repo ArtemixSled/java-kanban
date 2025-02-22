@@ -1,6 +1,9 @@
 package model;
 
-public class Task {
+import java.time.Duration;
+import java.time.LocalDateTime;
+
+public class Task implements Comparable<Task> {
 
     private String nameTask;
 
@@ -10,10 +13,29 @@ public class Task {
 
     private StatusTask statusTask;
 
+    private Duration duration;
+
+    private LocalDateTime startTime;
+
     public Task(String nameTask, String description, StatusTask statusTask) {
         this.nameTask = nameTask;
         this.description = description;
         this.statusTask = statusTask;
+    }
+
+    public Task(String nameTask, String description, StatusTask statusTask, LocalDateTime startTime) {
+        this.nameTask = nameTask;
+        this.description = description;
+        this.statusTask = statusTask;
+        this.startTime = startTime;
+    }
+
+    public Task(String nameTask, String description, StatusTask statusTask, LocalDateTime startTime, Duration duration) {
+        this.nameTask = nameTask;
+        this.description = description;
+        this.statusTask = statusTask;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
     public int getId() {
@@ -48,6 +70,26 @@ public class Task {
         this.statusTask = statusTask;
     }
 
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duration);
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -77,5 +119,10 @@ public class Task {
                 ", id=" + id +
                 ", statusTask=" + statusTask +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Task o) {
+        return this.startTime.compareTo(o.startTime);
     }
 }
