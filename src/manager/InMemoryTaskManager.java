@@ -23,7 +23,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task createTask(Task task) {
 
-        if (isTimeIntersections(task) == true) {
+        if (isTimeIntersections(task)) {
             return null;
         }
 
