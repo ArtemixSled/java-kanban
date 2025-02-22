@@ -172,11 +172,13 @@ class InMemoryHistoryManagerTest {
     }
     @Test
     void addSubTask() {
-        Epic epic = new Epic("epic", "epic", StatusTask.NEW, newMillennium);
+        Epic epic = new Epic("epic", "epic", StatusTask.NEW);
         manager.createEpic(epic);
 
-        SubTask subTask = new SubTask("Task", "Description", StatusTask.NEW, epic.getId(), newMillennium);
+        SubTask subTask = new SubTask("Task", "Description", StatusTask.NEW, epic.getId(),
+                LocalDateTime.of(2001, 1, 1, 0, 0, 0, 0), Duration.ofHours(6));
         manager.createSubTask(subTask);
+
 
         List<Task> history = historyManager.getHistory();
         assertTrue(history.isEmpty());

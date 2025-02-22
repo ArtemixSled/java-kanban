@@ -49,13 +49,8 @@ public interface TaskManager {
 
     List<Task> getHistory();
 
-    LocalDateTime epicStartTime(Epic epic);
-
-    LocalDateTime epicEndTime(Epic epic);
-
-    void refreshEpicInfo(Epic epic);
-
     TreeSet<Task> getPrioritizedTasks();
 
     boolean isTimeIntersections(Task task1);
+
 }

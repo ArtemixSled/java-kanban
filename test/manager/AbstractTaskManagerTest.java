@@ -57,8 +57,9 @@ public abstract class AbstractTaskManagerTest<T extends TaskManager> {
 
     @Test
     void createSubTask() {
-        Epic epic = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW, newMillennium));
-        SubTask subTask = manager.createSubTask(new SubTask("Test1", "Test1", StatusTask.NEW, epic.getId(), newMillennium));
+        Epic epic = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW));
+        SubTask subTask = manager.createSubTask(new SubTask("Test1", "Test1", StatusTask.NEW, epic.getId(),
+                LocalDateTime.of(2001, 1, 1, 0, 0, 0, 0), Duration.ofHours(6)));
 
         assertNotNull(subTask, "Подзадачу не создал (Объект subTask содержит null)");
     }
@@ -96,8 +97,9 @@ public abstract class AbstractTaskManagerTest<T extends TaskManager> {
         int testId2 = 2;
         int testId22 = 22;
 
-        Epic epic = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW, newMillennium));
-        manager.createSubTask(new SubTask("Test2", "Test2", StatusTask.NEW, epic.getId(), newMillennium));
+        Epic epic = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW));
+        manager.createSubTask(new SubTask("Test2", "Test2", StatusTask.NEW, epic.getId(),
+                LocalDateTime.of(2001, 1, 1, 0, 0, 0, 0), Duration.ofHours(6)));
 
         SubTask task2 = manager.returnSubTaskByID(testId2);
         SubTask task22 = manager.returnSubTaskByID(testId22);
@@ -136,8 +138,9 @@ public abstract class AbstractTaskManagerTest<T extends TaskManager> {
     void deleteSubTaskByID() {
         int testId2 = 2;
 
-        Epic epic = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW, newMillennium));
-        manager.createSubTask(new SubTask("Test2", "Test2", StatusTask.NEW, epic.getId(), newMillennium));
+        Epic epic = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW));
+        manager.createSubTask(new SubTask("Test2", "Test2", StatusTask.NEW, epic.getId(),
+                LocalDateTime.of(2001, 1, 1, 0, 0, 0, 0), Duration.ofHours(6)));
 
         assertNotNull(manager.returnSubTaskByID(testId2));
 
@@ -251,8 +254,9 @@ public abstract class AbstractTaskManagerTest<T extends TaskManager> {
 
     @Test
     void equalsTaskHeirs() {
-        Epic taskOne = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW, newMillennium));
-        SubTask taskTwo = manager.createSubTask(new SubTask("Test1", "Test1", StatusTask.NEW, taskOne.getId(), newMillennium));
+        Epic taskOne = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW));
+        SubTask taskTwo = manager.createSubTask(new SubTask("Test1", "Test1", StatusTask.NEW, taskOne.getId(),
+                LocalDateTime.of(2001, 1, 1, 0, 0, 0, 0), Duration.ofHours(6)));
 
         taskOne.setId(1);
         taskTwo.setId(2);
@@ -309,28 +313,23 @@ public abstract class AbstractTaskManagerTest<T extends TaskManager> {
 
     @Test
     void subTaskCannotIsEpic() {
-        Epic epic = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW, newMillennium));
+        Epic epic = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW));
         SubTask subTask = manager.createSubTask(new SubTask("Test1", "Test1", StatusTask.NEW,
-                epic.getId(), newMillennium));
+                epic.getId(), newMillennium, Duration.ofHours(6)));
 
         subTask.setId(1);
-        assertNull(manager.createSubTask(subTask));
+        assertNotNull(manager.createSubTask(subTask));
     }
 
     @Test
     void testTaskDuration() {
-        Epic epic = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW,
-                LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0)));
+        Epic epic = manager.createEpic(new Epic("Test1", "Test1", StatusTask.NEW));
 
         SubTask subTask1 = manager.createSubTask(new SubTask("Test1", "Test1", StatusTask.NEW, epic.getId(),
-                LocalDateTime.of(2000, 5, 1, 0, 0, 0, 0), Duration.ofHours(6)));
-        subTask1.setDuration(Duration.ofHours(20));
+                LocalDateTime.of(2000, 5, 1, 0, 0, 0, 0), Duration.ofHours(20)));
 
         SubTask subTask2 = manager.createSubTask(new SubTask("Test2", "Test2", StatusTask.NEW, epic.getId(),
-                LocalDateTime.of(2005, 7, 1, 0, 0, 0, 0), Duration.ofHours(6)));
-        subTask2.setDuration(Duration.ofHours(10));
-
-        manager.refreshEpicInfo(epic);
+                LocalDateTime.of(2005, 7, 1, 0, 0, 0, 0), Duration.ofHours(10)));
 
         assertEquals(LocalDateTime.of(2000, 5, 1, 0, 0, 0, 0), epic.getStartTime());
 
