@@ -18,7 +18,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
-    private TreeSet<Task> listPrioritizedTask = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+    private Set<Task> listPrioritizedTask = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     @Override
     public Task createTask(Task task) {
@@ -69,7 +69,6 @@ public class InMemoryTaskManager implements TaskManager {
             listPrioritizedTask.add(subTask);
         }
 
-        updateStatusEpic(epic);
         refreshEpicInfo(epic);
 
         return subTask;
@@ -124,7 +123,6 @@ public class InMemoryTaskManager implements TaskManager {
 
         subTaskList.put(subTask.getId(), subTask);
         Epic epic = epicList.get(subTask.getIdEpic());
-        updateStatusEpic(epic);
         refreshEpicInfo(epic);
     }
 
