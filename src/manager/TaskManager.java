@@ -13,11 +13,11 @@ public interface TaskManager {
 
     SubTask createSubTask(SubTask subTask);
 
-    void updateTask(Task task);
+    Task updateTask(Task task);
 
-    void updateEpic(Epic epic);
+    Epic updateEpic(Epic epic);
 
-    void updateSubTask(SubTask subTask);
+    SubTask updateSubTask(SubTask subTask);
 
     Task returnTaskByID(int id);
 

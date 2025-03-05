@@ -24,6 +24,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Task createTask(Task task) {
 
         if (isTimeIntersections(task)) {
+            System.out.println("Даты пересекаются");
             return null;
         }
 
@@ -75,13 +76,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(Task task) {
+    public Task updateTask(Task task) {
 
         if (!taskList.containsKey(task.getId())) {
-            return;
+            return null;
         }
         if (isTimeIntersections(task)) {
-            return;
+            System.out.println("Даты пересекаются");
+            return null;
         }
 
         if (task.getStartTime() != null) {
@@ -92,26 +94,39 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         taskList.put(task.getId(), task);
+        return task;
     }
 
     @Override
-    public void updateEpic(Epic epic) {
+    public Epic updateEpic(Epic epic) {
 
         if (!epicList.containsKey(epic.getId())) {
-            return;
+            return null;
         }
 
         epicList.put(epic.getId(), epic);
+        return null;
     }
 
     @Override
-    public void updateSubTask(SubTask subTask) {
+    public SubTask updateSubTask(SubTask subTask) {
+
+        if (getAllEpics().stream().noneMatch(epic -> subTask.getIdEpic() == epic.getId())) {
+            return null;
+        }
+
+
+        if (subTask.getId() == subTask.getIdEpic()) {
+            return null;
+        }
 
         if (!subTaskList.containsKey(subTask.getId())) {
-            return;
+            System.out.println(1);
+            return null;
         }
         if (isTimeIntersections(subTask)) {
-            return;
+            System.out.println(2);
+            return null;
         }
 
         if (subTask.getStartTime() != null) {
@@ -124,6 +139,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTaskList.put(subTask.getId(), subTask);
         Epic epic = epicList.get(subTask.getIdEpic());
         refreshEpicInfo(epic);
+        return subTask;
     }
 
     @Override
@@ -350,11 +366,16 @@ public class InMemoryTaskManager implements TaskManager {
         return listPrioritizedTasks.stream()
                 .filter(taskFromList -> task.getId() != taskFromList.getId())
                 .anyMatch(taskFromList ->
-                        (task.getStartTime().isAfter(taskFromList.getStartTime()) &&
-                                task.getStartTime().isBefore(taskFromList.getEndTime())) ||
-                                (task.getEndTime().isAfter(taskFromList.getStartTime()) &&
-                                        task.getEndTime().isBefore(taskFromList.getEndTime()))
+                        (task.getStartTime().isEqual(taskFromList.getStartTime()) ||
+                                task.getStartTime().isAfter(taskFromList.getStartTime()) &&
+                                        task.getStartTime().isBefore(taskFromList.getEndTime())) ||
+                                (task.getEndTime().isEqual(taskFromList.getEndTime()) ||
+                                        task.getEndTime().isAfter(taskFromList.getStartTime()) &&
+                                                task.getEndTime().isBefore(taskFromList.getEndTime())) ||
+                                (task.getStartTime().isBefore(taskFromList.getStartTime()) &&
+                                        task.getEndTime().isAfter(taskFromList.getEndTime()))
                 );
+
     }
 
     public int getIdTask() {
@@ -364,4 +385,5 @@ public class InMemoryTaskManager implements TaskManager {
     public void setIdTask(int idTask) {
         this.idTask = idTask;
     }
+
 }
