@@ -1,8 +1,5 @@
 package http.handlers;
 
-import http.adapter.DurationAdapter;
-import http.adapter.LocalDateAdapter;
-import http.adapter.LocalDateTimeAdapter;
 import com.google.gson.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -21,14 +18,6 @@ import manager.TaskManager;
 public class TaskHandler extends BaseHttpHandler implements HttpHandler {
 
     private TaskManager taskManager;
-
-    private Gson gson = new GsonBuilder()
-            .registerTypeAdapter(Duration.class, new DurationAdapter())
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .serializeNulls()
-            .setPrettyPrinting()
-            .create();
 
     public TaskHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
