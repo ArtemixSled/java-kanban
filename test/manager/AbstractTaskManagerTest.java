@@ -185,7 +185,7 @@ public abstract class AbstractTaskManagerTest<T extends TaskManager> {
 
     @Test
     void getAllSubTask() {
-        Epic epic = new Epic("Task", "Description", StatusTask.NEW, newMillennium);
+        Epic epic = new Epic("Task", "Description", StatusTask.NEW);
         manager.createEpic(epic);
 
         SubTask subTask1 = new SubTask("Task 1", "Description 1", StatusTask.NEW, epic.getId(),
